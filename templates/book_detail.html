@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}{{ book.title }} - 在线书店{% endblock %}
+
+{% block content %}
+<div class="row my-5">
+    <!-- 左侧封面 -->
+    <div class="col-lg-4 text-center">
+        {% if book.cover_url %}
+            <img src="{{ book.cover_url }}" class="img-fluid rounded shadow" style="max-height: 500px; object-fit: contain;" 
+                 alt="{{ book.title }}" onerror="this.src='{{ url_for('static', filename='default-cover.jpg') }}';">
+        {% else %}
+            <div class="cover-placeholder rounded shadow" style="width: 300px; height: 450px; margin: 0 auto;">
+                无封面
+            </div>
+        {% endif %}
+        <div class="mt-3">
+            <h4 class="text-danger fw-bold">¥ {{ "%.2f"|format(book.price) }}</h4>
+            <p class="text-success">库存：{{ stock_num }} 本</p>
+            {% if stock_num > 0 %}
+                <button class="btn btn-primary btn-lg w-100">加入购物车</button>
+            {% else %}
+                <button class="btn btn-secondary btn-lg w-100" disabled>已售罄</button>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- 右侧信息 -->
+    <div class="col-lg-8">
+        <h1 class="fw-bold">{{ book.title }}</h1>
+        
+        <p class="text-muted lead">
+            ISBN: {{ book.isbn }} | 
+            出版社: {{ book.publisher }} | 
+            出版日期: {{ book.publish_date }}
+        </p>
+
+        {% if book.rating > 0 %}
+            <p class="fs-4 text-warning">★ {{ book.rating }}/5.0</p>
+        {% endif %}
+
+        <hr>
+
+        <h5>作者</h5>
+        <ul>
+            {% for author in authors %}
+                <li><strong>{{ author.author_name }}</strong>{% if author.brief %} - {{ author.brief }}{% endif %}</li>
+            {% endfor %}
+        </ul>
+
+        <h5>分类</h5>
+        <p>
+            {% for cat in categories %}
+                <a href="{{ url_for('search', category=cat.category_id) }}" class="badge bg-secondary text-decoration-none me-2">
+                    {% if cat.parent_name %}{{ cat.parent_name }} → {% endif %}{{ cat.category_name }}
+                </a>
+            {% endfor %}
+        </p>
+
+        <h5 class="mt-4">书籍简介</h5>
+        <p class="lead">{{ book.description or '暂无简介' }}</p>
+    </div>
+</div>
+
+<div class="text-center mt-4">
+    <a href="{{ url_for('index') }}" class="btn btn-outline-primary">返回首页</a>
+</div>
+{% endblock %}

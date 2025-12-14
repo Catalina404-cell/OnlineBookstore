@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}注册 - 在线书店{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow mt-5">
+            <div class="card-body p-5">
+                <h3 class="text-center mb-4">注册新账号</h3>
+                <form method="post">
+                    <div class="mb-3">
+                        <label class="form-label">用户名</label>
+                        <input name="username" class="form-control" placeholder="字母数字下划线，3-20位" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">邮箱</label>
+                        <input name="email" type="email" class="form-control" placeholder="用于找回密码" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">密码</label>
+                        <input name="password" type="password" class="form-control" placeholder="至少6位" required>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">立即注册</button>
+                </form>
+                <p class="text-center mt-4 text-muted">
+                    已有账号？<a href="{{ url_for('login') }}">直接登录</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

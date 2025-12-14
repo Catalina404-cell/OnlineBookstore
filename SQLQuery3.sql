@@ -1,0 +1,1 @@
+UPDATE Users SET is_admin = 1 WHERE username = 'admin2';
