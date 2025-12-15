@@ -1,4 +1,4 @@
-# app.py
+#pip install -r requirements.txt
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import bcrypt
 import pyodbc
@@ -42,14 +42,11 @@ def get_db():
             conn.close()
 
 # 首页
-# 首页 - 修改这里！！！
 @app.route('/')
 def index():
     try:
         with get_db() as conn:
             cursor = conn.cursor()
-
-            # 热门书籍：TOP 12，按评分降序（你目前没有销量字段，用 rating 代替）
             cursor.execute("""
                 SELECT TOP 12 
                     book_id, title, isbn, price, cover_url, rating, publisher
@@ -76,7 +73,7 @@ def index():
 @app.route('/search')
 def search():
     keyword = request.args.get('q', '').strip()
-    cat_id = request.args.get('category', type=int)  # 安全获取整数
+    cat_id = request.args.get('category', type=int)
     
     try:
         with get_db() as conn:
@@ -116,8 +113,6 @@ def search():
 
             cursor.execute(query, params)
             books = cursor.fetchall()
-
-            # 关键：必须查询主分类并传给模板！否则 base.html 的左侧分类不显示
             cursor.execute("""
                 SELECT category_id, category_name 
                 FROM categories 
@@ -125,15 +120,12 @@ def search():
                 ORDER BY category_name
             """)
             main_categories = cursor.fetchall()
-
-        # 必须传 categories，否则 base.html 渲染失败
         return render_template('search.html', 
                                books=books, 
                                keyword=keyword, 
                                categories=main_categories)
     except Exception as e:
         flash(f"搜索失败: {str(e)}", 'danger')
-        # 出错时也要传 categories
         with get_db() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT category_id, category_name FROM categories WHERE parent_id IS NULL ORDER BY category_name")
